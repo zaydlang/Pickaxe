@@ -1,14 +1,16 @@
 import java.awt.Color;
 
 public class Element {
-   private int x;
-   private int y;
-   private int width;
-   private int height;
+   private double x;
+   private double y;
+   private double width;
+   private double height;
    
    private Color c;
+
+   private boolean update = false;
    
-   public Element(int x, int y, int width, int height, Color c) {
+   public Element(double x, double y, double width, double height, Color c) {
       this.x      = x;
       this.y      = y;
       this.width  = width;
@@ -16,14 +18,19 @@ public class Element {
       this.c      = c;
    }
    
-   public int getX()      { return x; }
-   public int getY()      { return y; }
-   public int getWidth()  { return width; }
-   public int getHeight() { return height; }
-   public Color getColor()  { return c; }
-   
-   public void setX(int x)           { this.x = x; }
-   public void setY(int y)           { this.y = y; }
-   public void setWidth(int width)   { this.width = width; }
-   public void setHeight(int height) { this.height = height; }
+   public void update() {};
+   public void move(String action) {};
+
+   public double getX()          { return x; }
+   public double getY()          { return y; }
+   public double getWidth()      { return width; }
+   public double getHeight()     { return height; }
+   public Color getColor()       { return c; }
+   public boolean getUpdate()    { return update; }
+
+   public void setX(double x)                  { this.x = x; }
+   public void setY(double y)                  { this.y = y; }
+   public void setWidth(double width)          { this.width = width; }
+   public void setHeight(double height)        { this.height = height; }
+   public void setUpdate(boolean newUpdate)    { update = newUpdate; }
 }	
