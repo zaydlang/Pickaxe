@@ -27,12 +27,18 @@ public class Level {
 
     public void buildLevel(ArrayList<String> actionQueue) {
         updateLevel(actionQueue);
-        data[0][0].update();
+        
+        for (int i = 0; i < data.length; i++) {
+			for (int j = 0; data[i][j] != null; j++) {
+                Element temp = data[i][j];
+                temp.update();
+			}
+		}
     }
     
     public void drawLevel(Graphics g) {
 		for (int i = 0; i < data.length; i++) {
-			for (int j = 0; j < data[i].length; j++) {
+			for (int j = 0; data[i][j] != null; j++) {
                 Element temp = data[i][j];
                 g.setColor(temp.getColor());
 				g.fillRect((int)(temp.getX()), (int)(height - temp.getY() - temp.getHeight()), (int)(temp.getWidth()), (int)(temp.getHeight()));
@@ -44,9 +50,9 @@ public class Level {
         for (int i = 0; actionQueue.size() != 0; actionQueue.remove(0)) {
             String action = actionQueue.get(0);
             
-            if (action.equals("move right") || action.equals("move left") || action.equals("jump") || action.equals("move right released") || action.equals("move left released")) data[0][0].move(action);
+            data = data[0][0].move(action, data);
         }
         
-        data[0][0].move("");
+        data = data[0][0].move("", data);
     }
 }

@@ -18,6 +18,7 @@ public class Player extends Element {
     private boolean movingLeft  = false;
     private boolean movingRight = false;
     
+    private boolean enablePhysics = true;
     public Player(double x, double y, double width, double height) {
     	super(x, y, width, height, Color.GREEN);   	
     	setUpdate(true);
@@ -28,23 +29,30 @@ public class Player extends Element {
 			setY(0);
 			yVel = 0;
 
-            if (xVel > 0) {
-	  	 	    xVel += Constants.PLAYER_MASS * Constants.GRAVITY * Constants.FRIC;
-                if (xVel < 0) xVel = 0;
-            }
+            if (enablePhysics) {
+		        if (xVel > 0) {
+		  	 	    xVel += Constants.PLAYER_MASS * Constants.GRAVITY * Constants.FRIC;
+		            if (xVel < 0) xVel = 0;
+		        }
 
-            if (xVel < 0) {
-	  	 	    xVel -= Constants.PLAYER_MASS * Constants.GRAVITY * Constants.FRIC;
-                if (xVel > 0) xVel = 0;
-            }
-	    } else {
+		        if (xVel < 0) {
+		  	 	    xVel -= Constants.PLAYER_MASS * Constants.GRAVITY * Constants.FRIC;
+		            if (xVel > 0) xVel = 0;
+		        }
+		   }
+	    } else if (enablePhysics) {
     		yVel += Constants.GRAVITY;
     	}
        
     	updatePos(xVel, yVel);
     }
     
-    public void move(String action) {
+    public Element[][] move(String action, Element[][] data) {
+        double oldXVel = xVel;
+        double oldYVel = yVel;
+        double oldX = getX();
+        double oldY = getY();
+        
 		if (action.equals("move left") || movingLeft) {
 		    movingLeft = true;	
 		    
@@ -69,8 +77,7 @@ public class Player extends Element {
             if (xVel > Constants.PLAYER_MOVE_SPEED) xVel = Constants.PLAYER_MOVE_SPEED;
 		}
 
-        if (action.equals("jump")) {	
-            if (getY() != 0) return;
+        if (action.equals("jump") && getY() == 0) {
 			yVel += Constants.PLAYER_JUMP_SPEED;
             setY(getY() + 1);
 		}
@@ -78,11 +85,27 @@ public class Player extends Element {
 		if (action.equals("move left released")) movingLeft = false;
 		if (action.equals("move right released")) movingRight = false;
 		
-		if (action.equals("grapple")) grapple();
-	}
-	
-	public void grapple() {
-	
+		if (action.equals("grapple")) {
+		   data[1][0] = new Grapple(getX(), getY(), Constants.GRAPPLE_SIZE, Constants.GRAPPLE_SIZE, Constants.GRAPPLE_SPEED);
+		}
+		
+		updatePos(xVel, yVel);
+		for (int i = 0; data[2][i] != null; i++) {
+			if (BoundingBox.intersects(this, data[2][i]) || BoundingBox.intersects(data[2][i], this)) {
+			
+		    System.out.println("boom");
+				xVel = 0;
+				yVel = 0;
+				setX(oldX - (getX() - oldX));
+				setY(oldY - (getY() - oldY));
+				enablePhysics = false;
+				break;
+		    } else {
+		        enablePhysics = true;
+		    }
+	    }
+	    
+		return data;
 	}
 	
     public void updatePos(double xVel, double yVel) {

@@ -15,7 +15,7 @@ import java.util.ArrayList;
 
 public class Display extends JComponent implements ActionListener {
    private final Font font         = new Font("Roboto", Font.BOLD, 48);
-   private static Element[][] data = {{new Player(0, 1200, 100, 100)}};
+   private static Element[][] data = new Element[200][200];
    public static Level level = new Level(Constants.WIDTH, Constants.HEIGHT, data);
 
    private Timer timer = new Timer(Constants.REFRESH_TIMER, this);
@@ -47,6 +47,9 @@ public class Display extends JComponent implements ActionListener {
    }
 
    public void init() {
+      data[0][0] = new Player(0, 1200, 100, 100);
+      data[2][0] = new Solid(500, 0, 200, 200);
+
       setSize(new Dimension(Constants.WIDTH, Constants.HEIGHT)); 
       setPreferredSize(new Dimension(Constants.WIDTH, Constants.HEIGHT));
       setLayout(null);
@@ -56,13 +59,15 @@ public class Display extends JComponent implements ActionListener {
       dummy.getInputMap(Constants.IFW).put(KeyStroke.getKeyStroke("released LEFT"), Constants.MOVE_LEFT_RELEASED);
       dummy.getInputMap(Constants.IFW).put(KeyStroke.getKeyStroke("released RIGHT"), Constants.MOVE_RIGHT_RELEASED);
       dummy.getInputMap(Constants.IFW).put(KeyStroke.getKeyStroke("UP"), Constants.JUMP);
+      dummy.getInputMap(Constants.IFW).put(KeyStroke.getKeyStroke("Z"), Constants.GRAPPLE);
       
       dummy.getActionMap().put(Constants.MOVE_LEFT, new ActionQueuer(Constants.MOVE_LEFT));
       dummy.getActionMap().put(Constants.MOVE_RIGHT, new ActionQueuer(Constants.MOVE_RIGHT));
       dummy.getActionMap().put(Constants.MOVE_LEFT_RELEASED, new ActionQueuer(Constants.MOVE_LEFT_RELEASED));
       dummy.getActionMap().put(Constants.MOVE_RIGHT_RELEASED, new ActionQueuer(Constants.MOVE_RIGHT_RELEASED));
       dummy.getActionMap().put(Constants.JUMP, new ActionQueuer(Constants.JUMP)); 
-      
+      dummy.getActionMap().put(Constants.GRAPPLE, new ActionQueuer(Constants.GRAPPLE)); 
+
       add(dummy);
       
       setVisible(true);

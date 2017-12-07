@@ -19,7 +19,7 @@ public class Element {
    }
    
    public void update() {};
-   public void move(String action) {};
+   public Element[][] move(String action, Element[][] data) { return null; };
 
    public double getX()          { return x; }
    public double getY()          { return y; }

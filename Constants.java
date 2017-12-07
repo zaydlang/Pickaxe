@@ -31,10 +31,14 @@ public final class Constants {
     public static final String MOVE_RIGHT          = "move right";
     public static final String MOVE_LEFT_RELEASED  = "move left released";
     public static final String MOVE_RIGHT_RELEASED = "move right released";
-
     public static final String JUMP                = "jump";
-    public static final double PLAYER_MOVE_SPEED   = 0.8;
+    public static final double PLAYER_MOVE_SPEED   = 0.4;
     public static final double PLAYER_ACC          = 0.2;
-    public static final double PLAYER_JUMP_SPEED   = 1.5;
+    public static final double PLAYER_JUMP_SPEED   = 1.2;
     public static final double PLAYER_MASS         = 1;
+
+    // Grapple
+    public static final String GRAPPLE           = "grapple";
+    public static final double GRAPPLE_SIZE      = 50;
+    public static final double GRAPPLE_SPEED     = 2;
 }
