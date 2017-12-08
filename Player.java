@@ -19,6 +19,9 @@ public class Player extends Element {
     private boolean movingRight = false;
     
     private boolean enablePhysics = true;
+    private boolean enableJump    = true;
+    private boolean enableGravity = true;
+
     public Player(double x, double y, double width, double height) {
     	super(x, y, width, height, Color.GREEN);   	
     	setUpdate(true);
@@ -40,7 +43,7 @@ public class Player extends Element {
 		            if (xVel > 0) xVel = 0;
 		        }
 		   }
-	    } else if (enablePhysics) {
+	    } else if (enableGravity) {
     		yVel += Constants.GRAVITY;
     	}
        
@@ -57,7 +60,7 @@ public class Player extends Element {
 		    movingLeft = true;	
 		    
             // Smooth Turning in mid-air
-            if (getY() != 0 && xVel > 0) {
+            if ((getY() != 0 && !enablePhysics) && xVel > 0) {
 			    xVel -= Constants.PLAYER_ACC;
 		    }
 		    
@@ -77,7 +80,7 @@ public class Player extends Element {
             if (xVel > Constants.PLAYER_MOVE_SPEED) xVel = Constants.PLAYER_MOVE_SPEED;
 		}
 
-        if (action.equals("jump") && getY() == 0) {
+        if (action.equals("jump") && (getY() == 0 || enableJump)) {
 			yVel += Constants.PLAYER_JUMP_SPEED;
             setY(getY() + 1);
 		}
@@ -88,23 +91,33 @@ public class Player extends Element {
 		if (action.equals("grapple")) {
 		   data[1][0] = new Grapple(getX(), getY(), Constants.GRAPPLE_SIZE, Constants.GRAPPLE_SIZE, Constants.GRAPPLE_SPEED);
 		}
-		
+
 		updatePos(xVel, yVel);
 		for (int i = 0; data[2][i] != null; i++) {
+            if (getY() - oldY > 1) yVel = 1;
 			if (BoundingBox.intersects(this, data[2][i]) || BoundingBox.intersects(data[2][i], this)) {
-			
-		    System.out.println("boom");
 				xVel = 0;
-				yVel = 0;
-				setX(oldX - (getX() - oldX));
-				setY(oldY - (getY() - oldY));
+				if (!BoundingBox.isAbove(this, data[2][i])) {
+System.out.println("now this is sad");
+                    enableJump = true;
+					setX(oldX - (getX() - oldX));
+    				yVel += Constants.GRAVITY;
+				}
+                if (BoundingBox.hitRoof(this, data[2][i])) {
+System.out.println("ASDJIFAKSDFADSF");
+                    yVel = Constants.GRAVITY;		
+                    updatePos(0, yVel);
+                } else {
+					setY(oldY - (getY() - oldY));
+                    yVel = 0;
+				}
 				enablePhysics = false;
-				break;
+			    i = 0;
 		    } else {
 		        enablePhysics = true;
 		    }
 	    }
-	    
+
 		return data;
 	}
 	
@@ -114,3 +127,4 @@ public class Player extends Element {
         setY(getY() + yVel);
     }
 }
+
