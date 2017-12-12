@@ -28,25 +28,26 @@ public class Player extends Element {
     }
     
     public void update() {
+
+        if (enablePhysics) {
+	    	if (xVel > 0) {
+		    	xVel += Constants.PLAYER_MASS * Constants.GRAVITY * Constants.FRIC;
+		        if (xVel < 0) xVel = 0;
+		    }
+
+		    if (xVel < 0) {
+		  	 	xVel -= Constants.PLAYER_MASS * Constants.GRAVITY * Constants.FRIC;
+		        if (xVel > 0) xVel = 0;
+		    }
+	    }
+
         if (getY() <= 0) {
 			setY(0);
-			yVel = 0;
-
-            if (enablePhysics) {
-		        if (xVel > 0) {
-		  	 	    xVel += Constants.PLAYER_MASS * Constants.GRAVITY * Constants.FRIC;
-		            if (xVel < 0) xVel = 0;
-		        }
-
-		        if (xVel < 0) {
-		  	 	    xVel -= Constants.PLAYER_MASS * Constants.GRAVITY * Constants.FRIC;
-		            if (xVel > 0) xVel = 0;
-		        }
-		   }
+			yVel = 0;      
 	    } else if (enableGravity) {
     		yVel += Constants.GRAVITY;
     	}
-       
+
     	updatePos(xVel, yVel);
     }
     
@@ -55,7 +56,6 @@ public class Player extends Element {
         double oldYVel = yVel;
         double oldX = getX();
         double oldY = getY();
-        
 		if (action.equals("move left") || movingLeft) {
 		    movingLeft = true;	
 		    
@@ -83,6 +83,7 @@ public class Player extends Element {
         if (action.equals("jump") && (getY() == 0 || enableJump)) {
 			yVel += Constants.PLAYER_JUMP_SPEED;
             setY(getY() + 1);
+            enableJump = false;
 		}
 		
 		if (action.equals("move left released")) movingLeft = false;
@@ -93,8 +94,44 @@ public class Player extends Element {
 		}
 
 		updatePos(xVel, yVel);
+
+		for (int i = 0; data[2][i] != null; i++) {
+			if (BoundingBox.intersects(this, data[2][i]) || BoundingBox.intersects(data[2][i], this)) {
+				if (BoundingBox.isAbove(this, data[2][i])) {
+					yVel = 0;
+					setY(data[2][i].getY() + data[2][i].getHeight());
+					enableJump = true;
+					//enablePhysics = true;
+				} 
+				
+				if (BoundingBox.hitRoof(this, data[2][i])) {
+					yVel = Constants.GRAVITY;
+					updatePos(0, yVel);
+					enableJump = false;
+				} 
+				
+				if (BoundingBox.hitLeft(this, data[2][i])) {
+					setX(data[2][i].getX() - this.getWidth());
+				}
+				
+				if (BoundingBox.hitRight(this, data[2][i])) {
+					setX(data[2][i].getX() + data[2][i].getWidth());
+				}
+				
+				if (BoundingBox.intersects(this, data[2][i]) || BoundingBox.intersects(data[2][i], this)) {
+					yVel = 0;
+					setY(data[2][i].getY() + data[2][i].getHeight());
+					enableJump = true;
+				}
+				
+				//enablePhysics = false;
+				i = 0;
+			}
+		}
+/*
 		for (int i = 0; data[2][i] != null; i++) {
             if (getY() - oldY > 1) yVel = 1;
+//System.out.println(BoundingBox.intersects(this, data[2][0]));
 			if (BoundingBox.intersects(this, data[2][i]) || BoundingBox.intersects(data[2][i], this)) {
 				xVel = 0;
 				if (!BoundingBox.isAbove(this, data[2][i])) {
@@ -102,21 +139,30 @@ System.out.println("now this is sad");
                     enableJump = true;
 					setX(oldX - (getX() - oldX));
     				yVel += Constants.GRAVITY;
-				}
+		        } else enableJump = true;
+
                 if (BoundingBox.hitRoof(this, data[2][i])) {
 System.out.println("ASDJIFAKSDFADSF");
                     yVel = Constants.GRAVITY;		
                     updatePos(0, yVel);
                 } else {
+System.out.println("CHANGING Y!!!!");
 					setY(oldY - (getY() - oldY));
                     yVel = 0;
 				}
+
+                if (BoundingBox.hitLeft(this, data[2][i]) || BoundingBox.hitRight(this, data[2][i])) {
+					setX(oldX - (getX() - oldX));
+				}
+
 				enablePhysics = false;
 			    i = 0;
 		    } else {
 		        enablePhysics = true;
 		    }
-	    }
+
+            
+	    }*/
 
 		return data;
 	}
@@ -126,5 +172,11 @@ System.out.println("ASDJIFAKSDFADSF");
         setX(getX() + xVel);
         setY(getY() + yVel);
     }
+
+    public void getHurt() {
+	    System.out.println("YEEEEOWCH!!!!");
+    }
 }
+
+
 

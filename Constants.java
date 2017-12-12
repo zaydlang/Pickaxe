@@ -37,6 +37,12 @@ public final class Constants {
     public static final double PLAYER_JUMP_SPEED   = 1.2;
     public static final double PLAYER_MASS         = 1;
 
+    // Enemy 1
+    public static final double ENEMY_MOVE_SPEED   = 0.2;
+    public static final double ENEMY_ACC          = 0.1;
+    public static final double ENEMY_JUMP_SPEED   = 1.2;
+    public static final double ENEMY_MASS         = 1;
+
     // Grapple
     public static final String GRAPPLE           = "grapple";
     public static final double GRAPPLE_SIZE      = 50;
