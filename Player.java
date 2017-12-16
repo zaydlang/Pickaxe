@@ -101,7 +101,7 @@ public class Player extends Element {
 		onGround = false;
 		for (int i = 0; data[2][i] != null; i++) {
 			if (BoundingBox.intersects(this, data[2][i]) || BoundingBox.intersects(data[2][i], this)) {
-				if (BoundingBox.isAbove(this, data[2][i])) {
+				if (BoundingBox.isAbove(this, data[2][i], Constants.BUFFER)) {
 					yVel = 0;
 					setY(data[2][i].getY() + data[2][i].getHeight());
 					enableJump = true;
@@ -109,20 +109,19 @@ public class Player extends Element {
 					onGround = true;
 				} 
 				
-				if (BoundingBox.hitRoof(this, data[2][i])) {
-System.out.println("Whoah there big guy");
+				if (BoundingBox.hitRoof(this, data[2][i], Constants.BUFFER)) {
 					yVel = Constants.GRAVITY;
 					updatePos(0, yVel);
 					enableJump = false;
 				} 
 				
-				if (BoundingBox.hitLeft(this, data[2][i]) && !onGround) {
+				if (BoundingBox.hitLeft(this, data[2][i], Constants.BUFFER)) {
 					setX(data[2][i].getX() - this.getWidth());
 					//yVel += Constants.GRAVITY;
 					enableJump = true;
 				}
 				
-				if (BoundingBox.hitRight(this, data[2][i]) && !onGround) {
+				if (BoundingBox.hitRight(this, data[2][i], Constants.BUFFER)) {
 					setX(data[2][i].getX() + data[2][i].getWidth());
 					//yVel += Constants.GRAVITY;
 					enableJump = true;

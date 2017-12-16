@@ -37,7 +37,7 @@ public class Enemy extends Element {
     	updatePos(xVel, yVel);
     }
 
-    public Element[][] move(String action, Element[][] data) {
+    public Element[][] move(String action, Element[][] data) {/*
         double oldXVel = xVel;
         double oldYVel = yVel;
         double oldX = getX();
@@ -81,7 +81,7 @@ System.out.println("ASDJIFAKSDFADSF");
             }
 	    }
 
-		return data;
+		return data;*/ return null;
 	}
 	
     public void updatePos(double xVel, double yVel) {
